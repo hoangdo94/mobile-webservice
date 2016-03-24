@@ -20,7 +20,7 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/', upload.single('avatar'), function(req, res, next) {
-    utils.refineData(req.body)
+    utils.refineData(req.body, req.file)
         .then(function (data) {
             var user = User(data);
             return user.save();
@@ -72,8 +72,8 @@ router.put('/:id', function(req, res, next) {
                 message: 'updated'
             });
         })
-        .catch(function(error) {
-            res.json(error);
+        .catch(function(err) {
+            res.json(err);
         });
 });
 

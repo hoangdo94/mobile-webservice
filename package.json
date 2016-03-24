@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "DEBUG=mobile-webservice:* nodemon ./bin/www"
   },
   "dependencies": {
     "bcrypt": "^0.8.5",

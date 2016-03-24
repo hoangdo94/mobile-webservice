@@ -1,4 +1,6 @@
 var Promise = require('bluebird');
+var path = require('path');
+var fs = require('fs');
 var bcrypt = require('bcrypt');
 
 var hashPassword = function(plain) {
@@ -23,16 +25,28 @@ var compareHash = function(plain, hash) {
     });
 };
 
-var refineData = function(data) {
+var handleImage = function(file) {
     return new Promise(function(resolve, reject) {
-        if (!data.password) {
-            resolve(data);
+        if (file) {
+            var dest = 'public/images/';
+            var ext = path.extname(file.originalname);
+            var fileName = file.filename + ext;
+            fs.rename(file.path, dest + fileName, function (err) {
+                if (err) reject(err);
+                resolve(fileName);
+            });
+        } else {
+            resolve(null);
         }
-        hashPassword(data.password)
-            .then(function(hash) {
-                console.log(hash);
-                data.password = hash;
-                console.log(data);
+    });
+};
+
+var refineData = function(data, file) {
+    return new Promise(function(resolve, reject) {
+        Promise.all([hashPassword(data.password), handleImage(file)])
+            .then(function(res) {
+                data.password = res[0];
+                data.avatar = res[1];
                 resolve(data);
             })
             .catch(function(err) {
@@ -44,5 +58,6 @@ var refineData = function(data) {
 module.exports = {
     hashPassword: hashPassword,
     compareHash: compareHash,
+    handleImage: handleImage,
     refineData: refineData
 };
