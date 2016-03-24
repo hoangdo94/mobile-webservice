@@ -1,5 +1,4 @@
 var Promise = require('bluebird');
-var path = require('path');
 var fs = require('fs');
 var bcrypt = require('bcrypt');
 
