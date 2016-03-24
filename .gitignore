@@ -34,3 +34,7 @@ node_modules
 
 # Webstorm
 .idea
+
+# tmp and images folder
+tmp
+public/images
