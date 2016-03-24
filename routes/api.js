@@ -3,7 +3,7 @@ var router = express.Router();
 var userAPI = require('./api/user');
 
 router.get('/', function(req, res, next) {
-    res.render('index', { title: 'API' });
+    res.render('index', { title: 'Mobile Webservice' });
 });
 
 router.use('/users', userAPI);

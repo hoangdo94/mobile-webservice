@@ -6,7 +6,6 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 
-var routes = require('./routes/index');
 var api = require('./routes/api');
 
 var app = express();
@@ -25,8 +24,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 mongoose.Promise = require('bluebird');
 mongoose.connect('mongodb://localhost/mobile-ws');
 
-app.use('/', routes);
-app.use('/api', api);
+app.use('/', api);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

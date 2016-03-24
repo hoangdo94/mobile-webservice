@@ -1,6 +1,8 @@
 var express = require('express');
 var utils = require('../../controllers/utils');
 var _ = require('lodash');
+var multer  = require('multer')
+var upload = multer({ dest: 'tmp/' })
 var Promise = require('bluebird');
 
 var User = require('../../models/user');
@@ -17,7 +19,7 @@ router.get('/', function(req, res, next) {
         });
 });
 
-router.post('/', function(req, res, next) {
+router.post('/', upload.single('avatar'), function(req, res, next) {
     utils.refineData(req.body)
         .then(function (data) {
             var user = User(data);
