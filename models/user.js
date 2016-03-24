@@ -2,9 +2,10 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var userSchema = new Schema({
-    name: String,
-    username: { type: String, required: true, unique: true },
+    name: { type: String, min: 3, max: 20 },
+    username: { type: String, required: true, unique: true, match: /^[a-z0-9_-]{3,16}$/ },
     password: { type: String, required: true },
+    email: { type: String, required: true, match: /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/ },
     admin: { type: Boolean, default: false },
     location: {
         placeName: String,
