@@ -14,7 +14,7 @@ router.get('/', function(req, res, next) {
         .then(function(users) {
             res.json(_.map(users, function(user) {
                 user = JSON.parse(JSON.stringify(user));
-                return _.omit(user, ['password']);
+                return _.omit(user, ['password', '__v']);
             }));
         })
         .catch(function(error) {
@@ -51,7 +51,7 @@ router.get('/:id', function(req, res, next) {
     User.findById(req.params.id)
         .then(function(user) {
             user = JSON.parse(JSON.stringify(user));
-            res.json(_.omit(user, ['password']));
+            res.json(_.omit(user, ['password', '__v']));
         })
         .catch(function(error) {
             res.json(error);
