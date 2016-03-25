@@ -66,7 +66,7 @@ router.put('/:id', utils.basicAuth, upload.single('avatar'), function(req, res, 
             message: 'no permission'
         })
     }
-    Promise.all([User.findById(req.params.id), utils.refineData(req.body)])
+    Promise.all([User.findById(req.params.id), utils.refineData(req.body, req.file)])
         .then(function(res) {
             if (res[0]) {
                 _.assign(res[0], res[1]);
