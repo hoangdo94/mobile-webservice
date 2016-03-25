@@ -75,7 +75,7 @@ var basicAuth = function(req, res, next) {
                         .then(function(result) {
                             if (result) {
                                 req.user = {
-                                    _id: user._id,
+                                    _id: user._id.toString(),
                                     admin: user.admin
                                 };
                                 next();
