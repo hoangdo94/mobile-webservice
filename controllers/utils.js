@@ -66,9 +66,9 @@ var refineData = function(data, file) {
 
 
 // Middlewares
-var checkContentType = function(req, res, next) {
-    var contentHeader = req.get('Content-Type');
-    if (contentHeader !== 'application/json' && contentHeader !== 'multipart/form-data') {
+var checkHeader = function(req, res, next) {
+    var clientHeader = req.get('X-WS-Client');
+    if (clientHeader !== 'mobile-webservice') {
         res.status(412).json({
             status: 0,
             message: 'precondition failed'
@@ -119,6 +119,6 @@ module.exports = {
     compareHash: compareHash,
     handleImage: handleImage,
     refineData: refineData,
-    checkContentType: checkContentType,
+    checkHeader: checkHeader,
     basicAuth: basicAuth
 };

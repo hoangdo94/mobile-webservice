@@ -9,7 +9,7 @@ var User = require('../../models/user');
 
 var router = express.Router();
 
-router.use(utils.checkContentType);
+router.use(utils.checkHeader);
 
 router.get('/', function(req, res, next) {
     User.find()
