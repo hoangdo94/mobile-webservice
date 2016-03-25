@@ -66,9 +66,9 @@ var refineData = function(data, file) {
 
 
 // Middlewares
-var jsonContentType = function(req, res, next) {
+var checkContentType = function(req, res, next) {
     var contentHeader = req.get('Content-Type');
-    if (contentHeader !== 'application/json') {
+    if (contentHeader !== 'application/json' && contentHeader !== 'multipart/form-data') {
         res.status(412).json({
             status: 0,
             message: 'precondition failed'
@@ -119,6 +119,6 @@ module.exports = {
     compareHash: compareHash,
     handleImage: handleImage,
     refineData: refineData,
-    jsonContentType: jsonContentType,
+    checkContentType: checkContentType,
     basicAuth: basicAuth
 };

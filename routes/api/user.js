@@ -9,7 +9,7 @@ var User = require('../../models/user');
 
 var router = express.Router();
 
-router.use(utils.jsonContentType);
+router.use(utils.checkContentType);
 
 router.get('/', function(req, res, next) {
     User.find()
