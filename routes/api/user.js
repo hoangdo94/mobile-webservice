@@ -9,6 +9,8 @@ var User = require('../../models/user');
 
 var router = express.Router();
 
+router.use(utils.jsonContentType);
+
 router.get('/', function(req, res, next) {
     User.find()
         .then(function(users) {

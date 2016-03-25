@@ -6,6 +6,7 @@ var _ = require('lodash');
 
 var User = require('../models/user');
 
+// Handle password, image in requests
 var hashPassword = function(plain) {
     return new Promise(function(resolve, reject) {
         if (!plain) resolve(null);
@@ -63,6 +64,20 @@ var refineData = function(data, file) {
     });
 };
 
+
+// Middlewares
+var jsonContentType = function(req, res, next) {
+    var contentHeader = req.get('Content-Type');
+    if (contentHeader !== 'application/json') {
+        res.status(412).json({
+            status: 0,
+            message: 'precondition failed'
+        });
+    } else {
+        next();
+    }
+};
+
 var basicAuth = function(req, res, next) {
     var unauthRespone = {
         status: 0,
@@ -104,5 +119,6 @@ module.exports = {
     compareHash: compareHash,
     handleImage: handleImage,
     refineData: refineData,
+    jsonContentType: jsonContentType,
     basicAuth: basicAuth
 };
