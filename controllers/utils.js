@@ -3,6 +3,8 @@ var path = require('path');
 var fs = require('fs');
 var bcrypt = require('bcrypt');
 
+var User = require('../models/user');
+
 var hashPassword = function(plain) {
     return new Promise(function(resolve, reject) {
         if (!plain) resolve(null);
@@ -53,11 +55,48 @@ var refineData = function(data, file) {
                 reject(err);
             });
     });
-}
+};
+
+var basicAuth = function(req, res, next) {
+    var unauthRespone = {
+        status: 0,
+        message: 'unauthoried'
+    };
+    var authHeader = req.get('Authorization');
+    if (!authHeader) {
+        res.status(401).json(unauthRespone);
+    } else {
+        var credentials = new Buffer(authHeader.replace('Basic ', '').trim(), 'base64').toString().split(':');
+        User.findOne({ username: credentials[0] })
+            .then(function(user) {
+                if (user) {
+                    compareHash(credentials[1], user.password)
+                        .then(function(result) {
+                            if (result) {
+                                req.user = {
+                                    _id: user._id,
+                                    admin: user.admin
+                                };
+                                next();
+                            } else {
+                                res.status(401).json(unauthRespone);
+                            }
+                        });
+                } else {
+                    res.status(401).json(unauthRespone);
+                }
+            })
+            .catch(function(err) {
+                res.json(err);
+            });
+    }
+
+};
 
 module.exports = {
     hashPassword: hashPassword,
     compareHash: compareHash,
     handleImage: handleImage,
-    refineData: refineData
+    refineData: refineData,
+    basicAuth: basicAuth
 };

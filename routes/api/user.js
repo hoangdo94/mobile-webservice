@@ -12,7 +12,10 @@ var router = express.Router();
 router.get('/', function(req, res, next) {
     User.find()
         .then(function(users) {
-            res.json(users);
+            res.json(_.map(users, function(user) {
+                user = JSON.parse(JSON.stringify(user));
+                return _.omit(user, ['password']);
+            }));
         })
         .catch(function(error) {
             res.json(error);
@@ -47,14 +50,22 @@ router.post('/', upload.single('avatar'), function(req, res, next) {
 router.get('/:id', function(req, res, next) {
     User.findById(req.params.id)
         .then(function(user) {
-            res.json(user);
+            user = JSON.parse(JSON.stringify(user));
+            res.json(_.omit(user, ['password']));
         })
         .catch(function(error) {
             res.json(error);
         });
 });
 
-router.put('/:id', function(req, res, next) {
+router.put('/:id', utils.basicAuth, upload.single('avatar'), function(req, res, next) {
+    if ((req.user._id !== req.params.id) && !req.user.admin) {
+        // only admin and the user himself/herself can change user's information
+        return res.status(401).json({
+            status: 0,
+            message: 'no permission'
+        })
+    }
     Promise.all([User.findById(req.params.id), utils.refineData(req.body)])
         .then(function(res) {
             if (res[0]) {
@@ -77,7 +88,14 @@ router.put('/:id', function(req, res, next) {
         });
 });
 
-router.delete('/:id', function(req, res, next) {
+router.delete('/:id', utils.basicAuth, function(req, res, next) {
+    if (!req.user.admin) {
+        // only admin can delete user
+        return res.status(401).json({
+            status: 0,
+            message: 'no permission'
+        })
+    }
     User.findByIdAndRemove(req.params.id)
         .then(function() {
             res.json({
