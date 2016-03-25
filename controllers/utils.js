@@ -2,6 +2,7 @@ var Promise = require('bluebird');
 var path = require('path');
 var fs = require('fs');
 var bcrypt = require('bcrypt');
+var _ = require('lodash');
 
 var User = require('../models/user');
 
@@ -47,8 +48,12 @@ var refineData = function(data, file) {
     return new Promise(function(resolve, reject) {
         Promise.all([hashPassword(data.password), handleImage(file)])
             .then(function(res) {
-                data.password = res[0];
-                data.avatar = res[1];
+                if (res[0]) {
+                    data.password = res[0];
+                }
+                if (res[1]) {
+                    data.avatar = res[1];
+                }
                 // omit some sensitive fields
                 resolve(_.omit(data, ['admin', 'createdAt', 'updatedAt']));
             })

@@ -6,7 +6,7 @@ var userSchema = new Schema({
     username: { type: String, required: true, unique: true, match: /^[a-z0-9_-]{3,16}$/ },
     password: { type: String, required: true },
     email: { type: String, required: true, match: /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/ },
-    avatar: String,
+    avatar: { type: Boolean, default: 'default.png' },
     admin: { type: Boolean, default: false },
     location: {
         placeName: String,
