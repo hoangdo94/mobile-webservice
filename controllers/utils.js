@@ -61,7 +61,7 @@ var refineData = function(data, file) {
 var basicAuth = function(req, res, next) {
     var unauthRespone = {
         status: 0,
-        message: 'unauthoried'
+        message: 'unauthorized'
     };
     var authHeader = req.get('Authorization');
     if (!authHeader) {
