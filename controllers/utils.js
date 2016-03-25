@@ -48,10 +48,10 @@ var refineData = function(data, file) {
     return new Promise(function(resolve, reject) {
         Promise.all([hashPassword(data.password), handleImage(file)])
             .then(function(res) {
-                if (res[0]) {
+                if (res[0] !== null) {
                     data.password = res[0];
                 }
-                if (res[1]) {
+                if (res[1] !== null) {
                     data.avatar = res[1];
                 }
                 // omit some sensitive fields
