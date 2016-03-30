@@ -89,7 +89,7 @@ router.get('/:id', utils.basicAuth, function(req, res, next) {
                 });
             }
         })
-        .catch(function(error) {
+        .catch(function(err) {
             res.json({
                 status: 0,
                 message: err.errmsg
@@ -150,7 +150,7 @@ router.delete('/:id', utils.basicAuth, function(req, res, next) {
                 message: 'deleted'
             });
         })
-        .catch(function(error) {
+        .catch(function(err) {
             res.json({
                 status: 0,
                 message: err.errmsg
