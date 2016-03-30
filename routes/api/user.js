@@ -64,14 +64,7 @@ router.post('/', function(req, res, next) {
 
 });
 
-router.get('/:id', utils.basicAuth, function(req, res, next) {
-    if ((req.user._id !== req.params.id) && !req.user.admin) {
-        // only admin and the user himself/herself can get user's information
-        return res.status(401).json({
-            status: 0,
-            message: 'no permission'
-        })
-    }
+router.get('/:id', function(req, res, next) {
     User.findById(req.params.id)
         .then(function(user) {
             if (user) {
