@@ -101,7 +101,12 @@ router.put('/:id', utils.basicAuth, upload.single('avatar'), function(req, res, 
     Promise.all([User.findById(req.params.id), utils.refineData(req.body, req.file)])
         .then(function(res) {
             if (res[0]) {
+                if (!req.user.admin) {
+                    // prevent normal user to update admin field
+                    _.omit(res[1], ['admin']);
+                }
                 _.assign(res[0], res[1]);
+
                 return res[0].save();
             }
             return Promise.rejected({

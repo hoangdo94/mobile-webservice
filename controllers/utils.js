@@ -56,7 +56,7 @@ var refineData = function(data, file) {
                     data.avatar = res[1];
                 }
                 // omit some sensitive fields
-                resolve(_.omit(data, ['admin', 'createdAt', 'updatedAt']));
+                resolve(_.omit(data, ['createdAt', 'updatedAt']));
             })
             .catch(function(err) {
                 reject(err);
