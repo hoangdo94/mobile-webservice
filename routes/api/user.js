@@ -1,8 +1,6 @@
 var express = require('express');
 var utils = require('../../controllers/utils');
 var _ = require('lodash');
-var multer  = require('multer');
-var upload = multer({ dest: 'tmp/' });
 var Promise = require('bluebird');
 
 var User = require('../../models/user');
@@ -38,8 +36,8 @@ router.get('/', utils.basicAuth, function(req, res, next) {
         });
 });
 
-router.post('/', upload.single('avatar'), function(req, res, next) {
-    utils.refineData(req.body, req.file)
+router.post('/', function(req, res, next) {
+    utils.refineData(req.body)
         .then(function (data) {
             var user = User(data);
             return user.save();
@@ -90,7 +88,6 @@ router.get('/:id', utils.basicAuth, function(req, res, next) {
             }
         })
         .catch(function(err) {
-            console.log(err);
             res.json({
                 status: 0,
                 message: err.errmsg || err.message
@@ -98,7 +95,7 @@ router.get('/:id', utils.basicAuth, function(req, res, next) {
         });
 });
 
-router.put('/:id', utils.basicAuth, upload.single('avatar'), function(req, res, next) {
+router.put('/:id', utils.basicAuth, function(req, res, next) {
     if ((req.user._id !== req.params.id) && !req.user.admin) {
         // only admin and the user himself/herself can change user's information
         return res.status(401).json({
@@ -106,7 +103,7 @@ router.put('/:id', utils.basicAuth, upload.single('avatar'), function(req, res, 
             message: 'no permission'
         })
     }
-    Promise.all([User.findById(req.params.id), utils.refineData(req.body, req.file)])
+    Promise.all([User.findById(req.params.id), utils.refineData(req.body)])
         .then(function(res) {
             if (res[0]) {
                 if (!req.user.admin) {
@@ -142,7 +139,7 @@ router.delete('/:id', utils.basicAuth, function(req, res, next) {
         return res.status(401).json({
             status: 0,
             message: 'no permission'
-        })
+        });
     }
     User.findByIdAndRemove(req.params.id)
         .then(function() {

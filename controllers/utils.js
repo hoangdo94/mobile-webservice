@@ -29,7 +29,7 @@ var compareHash = function(plain, hash) {
     });
 };
 
-var handleImage = function(file) {
+var handleFileUpload = function(file) {
     return new Promise(function(resolve, reject) {
         if (file) {
             var dest = 'public/images/';
@@ -45,15 +45,12 @@ var handleImage = function(file) {
     });
 };
 
-var refineData = function(data, file) {
+var refineData = function(data) {
     return new Promise(function(resolve, reject) {
-        Promise.all([hashPassword(data.password), handleImage(file)])
+        Promise.all([hashPassword(data.password)]) // Add more tasks if needed
             .then(function(res) {
                 if (res[0] !== null) {
                     data.password = res[0];
-                }
-                if (res[1] !== null) {
-                    data.avatar = res[1];
                 }
                 // omit some sensitive fields
                 resolve(_.omit(data, ['createdAt', 'updatedAt']));
@@ -117,7 +114,7 @@ var basicAuth = function(req, res, next) {
 module.exports = {
     hashPassword: hashPassword,
     compareHash: compareHash,
-    handleImage: handleImage,
+    handleFileUpload: handleFileUpload,
     refineData: refineData,
     checkHeader: checkHeader,
     basicAuth: basicAuth
