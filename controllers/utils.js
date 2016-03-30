@@ -63,16 +63,10 @@ var refineData = function(data) {
 
 
 // Middlewares
-var checkHeader = function(req, res, next) {
-    var clientHeader = req.get('X-WS-Client');
-    if (clientHeader !== 'mobile-webservice') {
-        res.status(412).json({
-            status: 0,
-            message: 'precondition failed'
-        });
-    } else {
-        next();
-    }
+var cors = function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
 };
 
 var basicAuth = function(req, res, next) {
@@ -116,6 +110,6 @@ module.exports = {
     compareHash: compareHash,
     handleFileUpload: handleFileUpload,
     refineData: refineData,
-    checkHeader: checkHeader,
+    cors: cors,
     basicAuth: basicAuth
 };
