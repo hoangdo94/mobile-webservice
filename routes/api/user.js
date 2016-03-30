@@ -9,18 +9,32 @@ var User = require('../../models/user');
 
 var router = express.Router();
 
-router.use(utils.checkHeader);
+// router.use(utils.checkHeader);
 
-router.get('/', function(req, res, next) {
+router.get('/', utils.basicAuth, function(req, res, next) {
+    if (!req.user.admin) {
+        // only admin can get user list
+        return res.status(401).json({
+            status: 0,
+            message: 'no permission'
+        })
+    }
     User.find()
         .then(function(users) {
-            res.json(_.map(users, function(user) {
+            var refinedUsers = _.map(users, function(user) {
                 user = JSON.parse(JSON.stringify(user));
                 return _.omit(user, ['password', '__v']);
-            }));
+            });
+            res.json({
+                status: 1,
+                data: refinedUsers
+            });
         })
-        .catch(function(error) {
-            res.json(error);
+        .catch(function(err) {
+            res.json({
+                status: 0,
+                message: err.errmsg
+            });
         });
 });
 
@@ -44,19 +58,35 @@ router.post('/', upload.single('avatar'), function(req, res, next) {
             }
         })
         .catch(function(err) {
-            res.json(err);
+            res.json({
+                status: 0,
+                message: err.errmsg
+            });
         });
 
 });
 
-router.get('/:id', function(req, res, next) {
+router.get('/:id', utils.basicAuth, function(req, res, next) {
+    if ((req.user._id !== req.params.id) && !req.user.admin) {
+        // only admin and the user himself/herself can get user's information
+        return res.status(401).json({
+            status: 0,
+            message: 'no permission'
+        })
+    }
     User.findById(req.params.id)
         .then(function(user) {
             user = JSON.parse(JSON.stringify(user));
-            res.json(_.omit(user, ['password', '__v']));
+            res.json({
+                status: 1,
+                data: _.omit(user, ['password', '__v'])
+            });
         })
         .catch(function(error) {
-            res.json(error);
+            res.json({
+                status: 0,
+                message: err.errmsg
+            });
         });
 });
 
@@ -86,7 +116,10 @@ router.put('/:id', utils.basicAuth, upload.single('avatar'), function(req, res, 
             });
         })
         .catch(function(err) {
-            res.json(err);
+            res.json({
+                status: 0,
+                message: err.errmsg
+            });
         });
 });
 
@@ -106,7 +139,10 @@ router.delete('/:id', utils.basicAuth, function(req, res, next) {
             });
         })
         .catch(function(error) {
-            res.json(error);
+            res.json({
+                status: 0,
+                message: err.errmsg
+            });
         })
 });
 
