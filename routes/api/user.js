@@ -76,11 +76,18 @@ router.get('/:id', utils.basicAuth, function(req, res, next) {
     }
     User.findById(req.params.id)
         .then(function(user) {
-            user = JSON.parse(JSON.stringify(user));
-            res.json({
-                status: 1,
-                data: _.omit(user, ['password', '__v'])
-            });
+            if (user) {
+                user = JSON.parse(JSON.stringify(user));
+                res.json({
+                    status: 1,
+                    data: _.omit(user, ['password', '__v'])
+                });
+            } else {
+                res.json({
+                    status: 0,
+                    message: 'not found'
+                });
+            }
         })
         .catch(function(error) {
             res.json({
