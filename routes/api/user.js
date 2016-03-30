@@ -33,7 +33,7 @@ router.get('/', utils.basicAuth, function(req, res, next) {
         .catch(function(err) {
             res.json({
                 status: 0,
-                message: err.errmsg
+                message: err.errmsg || err.message
             });
         });
 });
@@ -60,7 +60,7 @@ router.post('/', upload.single('avatar'), function(req, res, next) {
         .catch(function(err) {
             res.json({
                 status: 0,
-                message: err.errmsg
+                message: err.errmsg || err.message
             });
         });
 
@@ -90,9 +90,10 @@ router.get('/:id', utils.basicAuth, function(req, res, next) {
             }
         })
         .catch(function(err) {
+            console.log(err);
             res.json({
                 status: 0,
-                message: err.errmsg
+                message: err.errmsg || err.message
             });
         });
 });
@@ -130,7 +131,7 @@ router.put('/:id', utils.basicAuth, upload.single('avatar'), function(req, res, 
         .catch(function(err) {
             res.json({
                 status: 0,
-                message: err.errmsg
+                message: err.errmsg || err.message
             });
         });
 });
@@ -153,7 +154,7 @@ router.delete('/:id', utils.basicAuth, function(req, res, next) {
         .catch(function(err) {
             res.json({
                 status: 0,
-                message: err.errmsg
+                message: err.errmsg || err.message
             });
         })
 });
