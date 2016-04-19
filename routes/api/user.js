@@ -149,4 +149,30 @@ router.delete('/:id', utils.basicAuth, function(req, res, next) {
         })
 });
 
+router.post('/resolve', function(req, res, next) {
+    var data = req.body;
+    var keys = _.keys(data);
+    var ids = [];
+    keys.forEach(function(key) {
+        ids.push(data[key]);
+    });
+    User.find({_id: {$in: ids}})
+        .then(function(users) {
+            var refinedUsers = _.map(users, function(user) {
+                user = JSON.parse(JSON.stringify(user));
+                return _.pick(user, ['_id', 'username', 'email']);
+            });
+            res.json({
+                status: 1,
+                data: refinedUsers
+            });
+        })
+        .catch(function(err) {
+            res.json({
+                status: 0,
+                message: err.errmsg || err.message
+            });
+        });
+});
+
 module.exports = router;

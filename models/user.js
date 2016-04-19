@@ -5,14 +5,15 @@ var userSchema = new Schema({
     name: { type: String, min: 3, max: 20 },
     username: { type: String, required: true, unique: true, match: /^[a-z0-9_-]{3,16}$/ },
     password: { type: String, required: true },
-    email: { type: String, required: true, match: /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/ },
+    email: { type: String, required: true, unique: true, match: /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/ },
     avatar: { type: String, default: 'default.png' },
     admin: { type: Boolean, default: false },
-    location: {
+    location: [{
+        loginAt: Date,
         placeName: String,
         longitude: Number,
         latitude: Number
-    },
+    }],
     meta: {
         age: Number,
         website: String

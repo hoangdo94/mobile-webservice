@@ -7,7 +7,7 @@ var bookSchema = new Schema({
     author: { type: String, required: true },
     publishYear: { type: Number },
     genres: { type: [String] },
-    review: { type: String },
+    review: { type: String, required: true },
     cover: { type: String, default: 'default.png' },
     createdAt: Date,
     updatedAt: Date
