@@ -11,7 +11,8 @@ var router = express.Router();
 // router.use(utils.checkHeader);
 
 router.get('/:bookId', function(req, res, next) {
-    Comment.find({bookId: req.params.bookId})
+    Comment.find({book: req.params.bookId})
+        .populate('user', '-password -__v')
         .then(function(comments) {
             res.json({
                 status: 1,
@@ -42,8 +43,8 @@ router.post('/:bookId', utils.basicAuth, function(req, res, next) {
     })
         .then(function(book) {
             var comment = Comment(req.body);
-            comment.userId = req.user._id;
-            comment.bookId = book._id;
+            comment.user = req.user._id;
+            comment.book = book._id;
             return comment.save();
         })
         .then(function(comment) {
@@ -77,7 +78,7 @@ router.put('/:id', utils.basicAuth, function(req, res, next) {
                         message: 'not found'
                     });
                 } else {
-                    if (req.user._id !== comment.userId && !req.user.admin) {
+                    if (req.user._id !== comment.user.toString() && !req.user.admin) {
                         reject({
                             status: 0,
                             message: 'no permission'
@@ -116,7 +117,7 @@ router.delete('/:id', utils.basicAuth, function(req, res, next) {
                         message: 'not found'
                     });
                 } else {
-                    if (req.user._id !== comment.userId && !req.user.admin) {
+                    if (req.user._id !== comment.user.toString() && !req.user.admin) {
                         reject({
                             status: 0,
                             message: 'no permission'

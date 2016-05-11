@@ -39,16 +39,12 @@ router.get('/book/:id', function(req, res, next) {
             var ids = _.map(favorites, function(favorite) {
               return favorite.userId;
             });
-            return User.find({_id: {$in: ids}});
+            return User.find({_id: {$in: ids}}, {'password': 0, '__v': 0});
         })
         .then(function(users) {
-            var refinedUsers = _.map(users, function(user) {
-                user = JSON.parse(JSON.stringify(user));
-                return _.omit(user, ['password', '__v']);
-              });
             res.json({
                 status: 1,
-                data: refinedUsers
+                data: users
             });
         })
         .catch(function(err) {

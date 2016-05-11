@@ -5,13 +5,13 @@ var utils = require('../../controllers/utils');
 var router = express.Router();
 
 router.post('/', utils.basicAuth, function(req, res, next) {
-    User.findById(req.user._id)
+    User.findById(req.user._id, {'password': 0, '__v': 0})
         .then(function(user) {
             if (user) {
-                user = JSON.parse(JSON.stringify(user));
+                user._id = user._id.toString();
                 res.json({
                     status: 1,
-                    data: _.omit(user, ['password', '__v'])
+                    data: user
                 });
             } else {
                 res.json({
