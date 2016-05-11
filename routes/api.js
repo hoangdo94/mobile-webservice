@@ -6,6 +6,7 @@ var authAPI = require('./api/auth');
 var uploadAPI = require('./api/upload');
 var bookAPI = require('./api/book');
 var commentAPI = require('./api/comment');
+var favoriteAPI = require('./api/favorite');
 
 router.get('/', function(req, res, next) {
     res.render('index', { title: 'Mobile Webservice' });
@@ -18,5 +19,6 @@ router.use('/auth', authAPI);
 router.use('/users', userAPI);
 router.use('/books', bookAPI);
 router.use('/comments', commentAPI);
+router.use('/favorites', favoriteAPI);
 
 module.exports = router;

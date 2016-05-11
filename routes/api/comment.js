@@ -11,7 +11,7 @@ var router = express.Router();
 // router.use(utils.checkHeader);
 
 router.get('/:bookId', function(req, res, next) {
-    Comment.find({commentId: req.params.commentId})
+    Comment.find({bookId: req.params.bookId})
         .then(function(comments) {
             res.json({
                 status: 1,
@@ -36,9 +36,9 @@ router.post('/:bookId', utils.basicAuth, function(req, res, next) {
                     reject({
                         status: 0,
                         message: 'Book not found'
-                    })
+                    });
                 }
-            })
+            });
     })
         .then(function(book) {
             var comment = Comment(req.body);
@@ -56,29 +56,6 @@ router.post('/:bookId', utils.basicAuth, function(req, res, next) {
                 res.json({
                     status: 0,
                     message: 'not created'
-                })
-            }
-        })
-        .catch(function(err) {
-            res.json({
-                status: 0,
-                message: err.errmsg || err.message
-            });
-        });
-});
-
-router.get('/:id', function(req, res, next) {
-    Comment.findById(req.params.id)
-        .then(function(comment) {
-            if (comment) {
-                res.json({
-                    status: 1,
-                    data: comment
-                });
-            } else {
-                res.json({
-                    status: 0,
-                    message: 'not found'
                 });
             }
         })
@@ -109,7 +86,7 @@ router.put('/:id', utils.basicAuth, function(req, res, next) {
                         resolve(comment);
                     }
                 }
-            })
+            });
     })
         .then(function(comment) {
             _.assign(comment, req.body);
@@ -148,7 +125,7 @@ router.delete('/:id', utils.basicAuth, function(req, res, next) {
                         resolve(comment._id);
                     }
                 }
-            })
+            });
     })
         .then(function(id) {
             return Comment.findByIdAndRemove(id);

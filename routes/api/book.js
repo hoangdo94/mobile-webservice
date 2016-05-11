@@ -12,13 +12,9 @@ var router = express.Router();
 router.get('/', function(req, res, next) {
     Book.find()
         .then(function(books) {
-            var refinedBooks = _.map(books, function(book) {
-                book = JSON.parse(JSON.stringify(book));
-                return _.omit(book, ['__v']);
-            });
             res.json({
                 status: 1,
-                data: refinedBooks
+                data: books
             });
         })
         .catch(function(err) {
@@ -43,7 +39,7 @@ router.post('/', utils.basicAuth, function(req, res, next) {
                 res.json({
                     status: 0,
                     message: 'not created'
-                })
+                });
             }
         })
         .catch(function(err) {
@@ -97,7 +93,7 @@ router.put('/:id', utils.basicAuth, function(req, res, next) {
                         resolve(book);
                     }
                 }
-            })
+            });
     })
         .then(function(book) {
             _.assign(book, req.body);
@@ -136,7 +132,7 @@ router.delete('/:id', utils.basicAuth, function(req, res, next) {
                        resolve(book._id);
                    }
                }
-           })
+           });
    })
        .then(function(id) {
            return Book.findByIdAndRemove(id);

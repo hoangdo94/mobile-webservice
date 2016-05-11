@@ -15,7 +15,7 @@ router.get('/', utils.basicAuth, function(req, res, next) {
         return res.status(401).json({
             status: 0,
             message: 'no permission'
-        })
+        });
     }
     User.find()
         .then(function(users) {
@@ -52,7 +52,7 @@ router.post('/', function(req, res, next) {
                 res.json({
                     status: 0,
                     message: 'not created'
-                })
+                });
             }
         })
         .catch(function(err) {
@@ -94,7 +94,7 @@ router.put('/:id', utils.basicAuth, function(req, res, next) {
         return res.status(401).json({
             status: 0,
             message: 'no permission'
-        })
+        });
     }
     Promise.all([User.findById(req.params.id), utils.refineData(req.body)])
         .then(function(res) {
@@ -146,7 +146,7 @@ router.delete('/:id', utils.basicAuth, function(req, res, next) {
                 status: 0,
                 message: err.errmsg || err.message
             });
-        })
+        });
 });
 
 router.post('/resolve', function(req, res, next) {
