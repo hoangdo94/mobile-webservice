@@ -2,13 +2,13 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var favoriteSchema = new Schema({
-    bookId: { type: String, required: true },
-    userId: { type: String, required: true },
+    book: { type: Schema.Types.ObjectId, ref: 'Book', required: true },
+    user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     createdAt: Date,
     updatedAt: Date
 });
 
-favoriteSchema.index({bookId: 1, userId: 1}, {unique: true});
+favoriteSchema.index({book: 1, user: 1}, {unique: true});
 
 favoriteSchema.pre('save', function (next) {
     var now = Date.now();

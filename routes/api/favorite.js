@@ -11,14 +11,12 @@ var router = express.Router();
 
 // get favorite books of an user
 router.get('/user/:id', function(req, res, next) {
-    Favorite.find({userId: req.params.id})
+    Favorite.find({user: req.params.id})
+        .populate('book')
         .then(function(favorites) {
-            var ids = _.map(favorites, function(favorite) {
-              return favorite.bookId;
+            var books = _.map(favorites, function(favorite) {
+              return favorite.book;
             });
-            return Book.find({_id: {$in: ids}});
-        })
-        .then(function(books) {
             res.json({
                 status: 1,
                 data: books
@@ -34,14 +32,12 @@ router.get('/user/:id', function(req, res, next) {
 
 // get list of users who added this book to favorite
 router.get('/book/:id', function(req, res, next) {
-    Favorite.find({bookId: req.params.id})
+    Favorite.find({book: req.params.id})
+        .populate('user', '-password -__v')
         .then(function(favorites) {
-            var ids = _.map(favorites, function(favorite) {
-              return favorite.userId;
+            var users = _.map(favorites, function(favorite) {
+                return favorite.user;
             });
-            return User.find({_id: {$in: ids}}, {'password': 0, '__v': 0});
-        })
-        .then(function(users) {
             res.json({
                 status: 1,
                 data: users
@@ -72,8 +68,8 @@ router.post('/:bookId', utils.basicAuth, function(req, res, next) {
     })
         .then(function(book) {
           var favorite = Favorite({
-            bookId: book._id,
-            userId: req.user._id
+            book: book._id,
+            user: req.user._id
           });
           return favorite.save();
         })
@@ -100,11 +96,11 @@ router.post('/:bookId', utils.basicAuth, function(req, res, next) {
 
 // remove book from favorite list
 router.delete('/:bookId', utils.basicAuth, function(req, res, next) {
-    var userId = req.user._id;
+    var user = req.user._id;
     new Promise(function(resolve, reject) {
         Favorite.findOne({
-          userId: userId,
-          bookId: req.params.bookId
+          user: userId,
+          book: req.params.bookId
         })
             .then(function (favorite) {
                 if (favorite) {
