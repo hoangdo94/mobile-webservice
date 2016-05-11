@@ -51,7 +51,8 @@ router.post('/:bookId', utils.basicAuth, function(req, res, next) {
             if (comment) {
                 res.json({
                     status: 1,
-                    message: 'created'
+                    message: 'created',
+                    data: comment
                 });
             } else {
                 res.json({

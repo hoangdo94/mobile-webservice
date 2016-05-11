@@ -77,7 +77,8 @@ router.post('/:bookId', utils.basicAuth, function(req, res, next) {
             if (favorite) {
                 res.json({
                     status: 1,
-                    message: 'Added to favorited list'
+                    message: 'Added to favorited list',
+                    data: favorite
                 });
             } else {
                 res.json({

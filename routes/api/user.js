@@ -46,7 +46,8 @@ router.post('/', function(req, res, next) {
             if (user) {
                 res.json({
                     status: 1,
-                    message: 'created'
+                    message: 'created',
+                    data: user
                 });
             } else {
                 res.json({

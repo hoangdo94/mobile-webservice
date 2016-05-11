@@ -33,7 +33,8 @@ router.post('/', utils.basicAuth, function(req, res, next) {
             if (book) {
                 res.json({
                     status: 1,
-                    message: 'created'
+                    message: 'created',
+                    data: book
                 });
             } else {
                 res.json({
