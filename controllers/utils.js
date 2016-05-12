@@ -88,7 +88,14 @@ var basicAuth = function(req, res, next) {
                             if (result) {
                                 req.user = {
                                     _id: user._id.toString(),
-                                    admin: user.admin
+                                    name: user.name,
+                                    username: user.username,
+                                    email: user.email,
+                                    avatar: user.avatar,
+                                    admin: user.admin,
+                                    meta: user.meta,
+                                    createdAt: user.createdAt,
+                                    updatedAt: user.updatedAt
                                 };
                                 next();
                             } else {
