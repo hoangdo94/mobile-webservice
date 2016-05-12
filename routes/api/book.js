@@ -17,16 +17,18 @@ router.get('/', function(req, res, next) {
     }
     if (req.query.search) {
         query.$text = {
-          $search: req.query.search
+            $search: req.query.search
         };
-        // options.score = {
-        //     $meta: 'textScore'
-        // };
-        // options.sort = {
-        //     score: {
-        //         $meta: 'textScore'
-        //     }
-        // };
+        options.select = {
+            score: {
+                $meta: 'textScore'
+            }
+        };
+        options.sort = {
+            score: {
+                $meta: 'textScore'
+            }
+        };
     }
     if ((page = Math.abs(parseInt(req.query.page))) > 0) {
         options.page = page;
@@ -34,8 +36,6 @@ router.get('/', function(req, res, next) {
     if ((limit = Math.abs(parseInt(req.query.perPage))) > 0) {
         options.limit = limit;
     }
-    console.log(query);
-    console.log(options);
     Book.paginate(query, options)
         .then(function(result) {
             res.json({
