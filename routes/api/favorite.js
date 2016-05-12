@@ -11,15 +11,31 @@ var router = express.Router();
 
 // get favorite books of an user
 router.get('/user/:id', function(req, res, next) {
-    Favorite.find({user: req.params.id})
-        .populate('book')
-        .then(function(favorites) {
-            var books = _.map(favorites, function(favorite) {
-              return favorite.book;
-            });
+    var options = {
+        populate: {
+            path: 'book',
+            select: '-__v'
+        }
+    };
+    if ((page = Math.abs(parseInt(req.query.page))) > 0) {
+      options.page = page;
+    }
+    if ((limit = Math.abs(parseInt(req.query.perPage))) > 0) {
+      options.limit = limit;
+    }
+    Favorite.paginate({
+            user: req.params.id
+        }, options)
+        .then(function(result) {
             res.json({
                 status: 1,
-                data: books
+                total: result.total,
+                perPage: result.limit,
+                page: result.page,
+                pages: result.pages,
+                data: _.map(result.docs, function(favorite) {
+                    return favorite.book;
+                })
             });
         })
         .catch(function(err) {
@@ -32,15 +48,31 @@ router.get('/user/:id', function(req, res, next) {
 
 // get list of users who added this book to favorite
 router.get('/book/:id', function(req, res, next) {
-    Favorite.find({book: req.params.id})
-        .populate('user', '-password -__v')
-        .then(function(favorites) {
-            var users = _.map(favorites, function(favorite) {
-                return favorite.user;
-            });
+    var options = {
+        populate: {
+            path: 'user',
+            select: '-password -__v'
+        }
+    };
+    if ((page = Math.abs(parseInt(req.query.page))) > 0) {
+      options.page = page;
+    }
+    if ((limit = Math.abs(parseInt(req.query.perPage))) > 0) {
+      options.limit = limit;
+    }
+    Favorite.paginate({
+            book: req.params.id
+        }, options)
+        .then(function(result) {
             res.json({
                 status: 1,
-                data: users
+                total: result.total,
+                perPage: result.limit,
+                page: result.page,
+                pages: result.pages,
+                data: _.map(result.docs, function(favorite) {
+                    return favorite.user;
+                })
             });
         })
         .catch(function(err) {
@@ -54,24 +86,24 @@ router.get('/book/:id', function(req, res, next) {
 // add book to favorite list
 router.post('/:bookId', utils.basicAuth, function(req, res, next) {
     new Promise(function(resolve, reject) {
-        Book.findById(req.params.bookId)
-            .then(function (book) {
-                if (book) {
-                    resolve(book);
-                } else {
-                    reject({
-                        status: 0,
-                        message: 'Book not found'
-                    });
-                }
-            });
-    })
+            Book.findById(req.params.bookId)
+                .then(function(book) {
+                    if (book) {
+                        resolve(book);
+                    } else {
+                        reject({
+                            status: 0,
+                            message: 'Book not found'
+                        });
+                    }
+                });
+        })
         .then(function(book) {
-          var favorite = Favorite({
-            book: book._id,
-            user: req.user._id
-          });
-          return favorite.save();
+            var favorite = Favorite({
+                book: book._id,
+                user: req.user._id
+            });
+            return favorite.save();
         })
         .then(function(favorite) {
             if (favorite) {
@@ -99,21 +131,21 @@ router.post('/:bookId', utils.basicAuth, function(req, res, next) {
 router.delete('/:bookId', utils.basicAuth, function(req, res, next) {
     var user = req.user._id;
     new Promise(function(resolve, reject) {
-        Favorite.findOne({
-          user: userId,
-          book: req.params.bookId
+            Favorite.findOne({
+                    user: userId,
+                    book: req.params.bookId
+                })
+                .then(function(favorite) {
+                    if (favorite) {
+                        resolve(favorite._id);
+                    } else {
+                        reject({
+                            status: 0,
+                            message: 'Favorite not found'
+                        });
+                    }
+                });
         })
-            .then(function (favorite) {
-                if (favorite) {
-                    resolve(favorite._id);
-                } else {
-                    reject({
-                        status: 0,
-                        message: 'Favorite not found'
-                    });
-                }
-            });
-    })
         .then(function(favoriteId) {
             return Favorite.findByIdAndRemove(favoriteId);
         })

@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+var mongoosePaginate = require('mongoose-paginate');
 
 var bookSchema = new Schema({
     userId: { type: String, required: true },
@@ -20,6 +21,8 @@ bookSchema.pre('save', function (next) {
 
     next();
 });
+
+bookSchema.plugin(mongoosePaginate);
 
 var Book = mongoose.model('Book', bookSchema);
 

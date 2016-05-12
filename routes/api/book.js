@@ -10,11 +10,22 @@ var router = express.Router();
 // router.use(utils.checkHeader);
 
 router.get('/', function(req, res, next) {
-    Book.find()
-        .then(function(books) {
+    var options = {};
+    if ((page = Math.abs(parseInt(req.query.page))) > 0) {
+      options.page = page;
+    }
+    if ((limit = Math.abs(parseInt(req.query.perPage))) > 0) {
+      options.limit = limit;
+    }
+    Book.paginate({}, options)
+        .then(function(result) {
             res.json({
                 status: 1,
-                data: books
+                total: result.total,
+                perPage: result.limit,
+                page: result.page,
+                pages: result.pages,
+                data: result.docs
             });
         })
         .catch(function(err) {

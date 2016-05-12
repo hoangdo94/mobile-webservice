@@ -11,12 +11,27 @@ var router = express.Router();
 // router.use(utils.checkHeader);
 
 router.get('/:bookId', function(req, res, next) {
-    Comment.find({book: req.params.bookId})
-        .populate('user', '-password -__v')
-        .then(function(comments) {
+    var options = {
+        populate: {
+          path: 'user',
+          select: '-password -__v'
+        }
+    };
+    if ((page = Math.abs(parseInt(req.query.page))) > 0) {
+      options.page = page;
+    }
+    if ((limit = Math.abs(parseInt(req.query.perPage))) > 0) {
+      options.limit = limit;
+    }
+    Comment.paginate({}, options)
+        .then(function(result) {
             res.json({
                 status: 1,
-                data: comments
+                total: result.total,
+                perPage: result.limit,
+                page: result.page,
+                pages: result.pages,
+                data: result.docs
             });
         })
         .catch(function(err) {

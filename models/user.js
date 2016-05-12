@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+var mongoosePaginate = require('mongoose-paginate');
 
 var userSchema = new Schema({
     name: { type: String, min: 3, max: 20 },
@@ -23,6 +24,8 @@ userSchema.pre('save', function (next) {
 
     next();
 });
+
+userSchema.plugin(mongoosePaginate);
 
 var User = mongoose.model('User', userSchema);
 

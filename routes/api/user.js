@@ -17,15 +17,24 @@ router.get('/', utils.basicAuth, function(req, res, next) {
             message: 'no permission'
         });
     }
-    User.find()
-        .then(function(users) {
-            var refinedUsers = _.map(users, function(user) {
-                user = JSON.parse(JSON.stringify(user));
-                return _.omit(user, ['password', '__v']);
-            });
+    var options = {
+      select: '-password -__v'
+    };
+    if ((page = Math.abs(parseInt(req.query.page))) > 0) {
+      options.page = page;
+    }
+    if ((limit = Math.abs(parseInt(req.query.perPage))) > 0) {
+      options.limit = limit;
+    }
+    User.paginate({}, options)
+        .then(function(result) {
             res.json({
                 status: 1,
-                data: refinedUsers
+                total: result.total,
+                perPage: result.limit,
+                page: result.page,
+                pages: result.pages,
+                data: result.docs
             });
         })
         .catch(function(err) {
@@ -140,32 +149,6 @@ router.delete('/:id', utils.basicAuth, function(req, res, next) {
             res.json({
                 status: 1,
                 message: 'deleted'
-            });
-        })
-        .catch(function(err) {
-            res.json({
-                status: 0,
-                message: err.errmsg || err.message
-            });
-        });
-});
-
-router.post('/resolve', function(req, res, next) {
-    var data = req.body;
-    var keys = _.keys(data);
-    var ids = [];
-    keys.forEach(function(key) {
-        ids.push(data[key]);
-    });
-    User.find({_id: {$in: ids}})
-        .then(function(users) {
-            var refinedUsers = _.map(users, function(user) {
-                user = JSON.parse(JSON.stringify(user));
-                return _.pick(user, ['_id', 'username', 'email']);
-            });
-            res.json({
-                status: 1,
-                data: refinedUsers
             });
         })
         .catch(function(err) {

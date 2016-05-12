@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+var mongoosePaginate = require('mongoose-paginate');
 
 var favoriteSchema = new Schema({
     book: { type: Schema.Types.ObjectId, ref: 'Book', required: true },
@@ -17,6 +18,8 @@ favoriteSchema.pre('save', function (next) {
 
     next();
 });
+
+favoriteSchema.plugin(mongoosePaginate);
 
 var Favorite = mongoose.model('Favorite', favoriteSchema);
 
