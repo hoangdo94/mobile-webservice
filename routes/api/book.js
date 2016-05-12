@@ -30,12 +30,22 @@ router.get('/', function(req, res, next) {
             }
         };
     }
+    if (req.query.year) {
+        query.publishYear = {};
+        if ((min = Math.abs(parseInt(req.query.year.min))) > 0) {
+          query.publishYear.$gte = min;
+        }
+        if ((max = Math.abs(parseInt(req.query.year.max))) > 0) {
+          query.publishYear.$lte = max;
+        }
+    }
     if ((page = Math.abs(parseInt(req.query.page))) > 0) {
         options.page = page;
     }
     if ((limit = Math.abs(parseInt(req.query.perPage))) > 0) {
         options.limit = limit;
     }
+    console.log(query);
     Book.paginate(query, options)
         .then(function(result) {
             res.json({
