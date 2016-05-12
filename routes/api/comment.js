@@ -13,17 +13,19 @@ var router = express.Router();
 router.get('/:bookId', function(req, res, next) {
     var options = {
         populate: {
-          path: 'user',
-          select: '-password -__v'
+            path: 'user',
+            select: '-password -__v'
         }
     };
     if ((page = Math.abs(parseInt(req.query.page))) > 0) {
-      options.page = page;
+        options.page = page;
     }
     if ((limit = Math.abs(parseInt(req.query.perPage))) > 0) {
-      options.limit = limit;
+        options.limit = limit;
     }
-    Comment.paginate({}, options)
+    Comment.paginate({
+            book: req.params.bookId
+        }, options)
         .then(function(result) {
             res.json({
                 status: 1,
@@ -44,18 +46,18 @@ router.get('/:bookId', function(req, res, next) {
 
 router.post('/:bookId', utils.basicAuth, function(req, res, next) {
     new Promise(function(resolve, reject) {
-        Book.findById(req.params.bookId)
-            .then(function (book) {
-                if (book) {
-                    resolve(book);
-                } else {
-                    reject({
-                        status: 0,
-                        message: 'Book not found'
-                    });
-                }
-            });
-    })
+            Book.findById(req.params.bookId)
+                .then(function(book) {
+                    if (book) {
+                        resolve(book);
+                    } else {
+                        reject({
+                            status: 0,
+                            message: 'Book not found'
+                        });
+                    }
+                });
+        })
         .then(function(book) {
             var comment = Comment(req.body);
             comment.user = req.user._id;
@@ -69,12 +71,12 @@ router.post('/:bookId', utils.basicAuth, function(req, res, next) {
                     status: 1,
                     message: 'created',
                     data: {
-                      '_id': comment._id,
-                      book: comment.book,
-                      user: req.user,
-                      content: comment.content,
-                      createdAt: comment.createdAt,
-                      updatedAt: comment.updatedAt
+                        '_id': comment._id,
+                        book: comment.book,
+                        user: req.user,
+                        content: comment.content,
+                        createdAt: comment.createdAt,
+                        updatedAt: comment.updatedAt
                     }
                 });
             } else {
@@ -94,25 +96,25 @@ router.post('/:bookId', utils.basicAuth, function(req, res, next) {
 
 router.put('/:id', utils.basicAuth, function(req, res, next) {
     new Promise(function(resolve, reject) {
-        Comment.findById(req.params.id)
-            .then(function(comment) {
-                if (!comment) {
-                    reject({
-                        status: 0,
-                        message: 'not found'
-                    });
-                } else {
-                    if (req.user._id !== comment.user.toString() && !req.user.admin) {
+            Comment.findById(req.params.id)
+                .then(function(comment) {
+                    if (!comment) {
                         reject({
                             status: 0,
-                            message: 'no permission'
+                            message: 'not found'
                         });
                     } else {
-                        resolve(comment);
+                        if (req.user._id !== comment.user.toString() && !req.user.admin) {
+                            reject({
+                                status: 0,
+                                message: 'no permission'
+                            });
+                        } else {
+                            resolve(comment);
+                        }
                     }
-                }
-            });
-    })
+                });
+        })
         .then(function(comment) {
             _.assign(comment, req.body);
             return comment.save();
@@ -133,29 +135,29 @@ router.put('/:id', utils.basicAuth, function(req, res, next) {
 
 router.delete('/:id', utils.basicAuth, function(req, res, next) {
     new Promise(function(resolve, reject) {
-        Comment.findById(req.params.id)
-            .then(function(comment) {
-                if (!comment) {
-                    reject({
-                        status: 0,
-                        message: 'not found'
-                    });
-                } else {
-                    if (req.user._id !== comment.user.toString() && !req.user.admin) {
+            Comment.findById(req.params.id)
+                .then(function(comment) {
+                    if (!comment) {
                         reject({
                             status: 0,
-                            message: 'no permission'
+                            message: 'not found'
                         });
                     } else {
-                        resolve(comment._id);
+                        if (req.user._id !== comment.user.toString() && !req.user.admin) {
+                            reject({
+                                status: 0,
+                                message: 'no permission'
+                            });
+                        } else {
+                            resolve(comment._id);
+                        }
                     }
-                }
-            });
-    })
+                });
+        })
         .then(function(id) {
             return Comment.findByIdAndRemove(id);
         })
-        .then(function () {
+        .then(function() {
             res.json({
                 status: 1,
                 message: 'deleted'
