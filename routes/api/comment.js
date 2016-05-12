@@ -48,6 +48,7 @@ router.post('/:bookId', utils.basicAuth, function(req, res, next) {
             return comment.save();
         })
         .then(function(comment) {
+            comment.user = req.user;
             if (comment) {
                 res.json({
                     status: 1,

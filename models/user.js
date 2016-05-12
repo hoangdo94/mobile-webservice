@@ -8,12 +8,6 @@ var userSchema = new Schema({
     email: { type: String, required: true, unique: true, match: /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/ },
     avatar: { type: String, default: 'default.png' },
     admin: { type: Boolean, default: false },
-    location: [{
-        loginAt: Date,
-        placeName: String,
-        longitude: Number,
-        latitude: Number
-    }],
     meta: {
         age: Number,
         website: String
