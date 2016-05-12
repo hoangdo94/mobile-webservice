@@ -14,6 +14,8 @@ var bookSchema = new Schema({
     updatedAt: Date
 });
 
+bookSchema.index({'$**': 'text'});
+
 bookSchema.pre('save', function (next) {
     var now = Date.now();
     if (!this.createdAt) this.createdAt = now;
