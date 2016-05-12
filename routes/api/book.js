@@ -11,7 +11,11 @@ var router = express.Router();
 
 router.get('/', function(req, res, next) {
     var query = {};
-    var options = {};
+    var options = {
+        sort: {
+            createdAt: -1
+        }
+    };
     if (req.query.userId) {
         query.userId = req.query.userId;
     }

@@ -18,7 +18,10 @@ router.get('/', utils.basicAuth, function(req, res, next) {
         });
     }
     var options = {
-      select: '-password -__v'
+      select: '-password -__v',
+      sort: {
+          createdAt: -1
+      }
     };
     if ((page = Math.abs(parseInt(req.query.page))) > 0) {
       options.page = page;

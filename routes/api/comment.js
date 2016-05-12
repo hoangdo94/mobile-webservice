@@ -15,6 +15,9 @@ router.get('/:bookId', function(req, res, next) {
         populate: {
             path: 'user',
             select: '-password -__v'
+        },
+        sort: {
+            createdAt: -1
         }
     };
     if ((page = Math.abs(parseInt(req.query.page))) > 0) {
