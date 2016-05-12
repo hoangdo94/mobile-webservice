@@ -45,7 +45,6 @@ router.get('/', function(req, res, next) {
     if ((limit = Math.abs(parseInt(req.query.perPage))) > 0) {
         options.limit = limit;
     }
-    console.log(query);
     Book.paginate(query, options)
         .then(function(result) {
             res.json({
