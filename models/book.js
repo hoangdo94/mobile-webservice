@@ -39,7 +39,6 @@ bookSchema.index({
     'weights': {
         title: 3,
         author: 2,
-        publishYear: 2,
         review: 1,
         genres: 1
     }
