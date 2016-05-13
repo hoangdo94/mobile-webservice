@@ -111,7 +111,6 @@ router.post('/:bookId', utils.basicAuth, function(req, res, next) {
                 user: req.user._id
             });
             pushbots.sendPushNotification(book.userId, {
-              message: "Thông báo",
               image: 'http://api.ws.hoangdo.info/images/' + book.cover,
               fields: {
                 bookId: book._id,
