@@ -169,4 +169,28 @@ router.delete('/:bookId', utils.basicAuth, function(req, res, next) {
         });
 });
 
+router.get('/check/:bookId', utils.basicAuth, function(req, res, next) {
+    var user = req.user._id;
+    Favorite.findOne({user: user, book: req.params.bookId})
+      .then(function(favorite) {
+          if (favorite) {
+            res.json({
+                status: 1,
+                data: true
+            });
+          } else {
+            res.json({
+                status: 1,
+                data: false
+            });
+          }
+      })
+      .catch(function(err) {
+          res.json({
+              status: 0,
+              message: err.errmsg || err.message
+          });
+      });
+});
+
 module.exports = router;
