@@ -138,7 +138,7 @@ router.delete('/:bookId', utils.basicAuth, function(req, res, next) {
     var user = req.user._id;
     new Promise(function(resolve, reject) {
             Favorite.findOne({
-                    user: userId,
+                    user: user,
                     book: req.params.bookId
                 })
                 .then(function(favorite) {
