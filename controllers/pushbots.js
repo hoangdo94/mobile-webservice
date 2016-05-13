@@ -8,7 +8,7 @@ function sendPushNotification(userId, data) {
   });
 
   if (data.message) {
-    Pushbots.setMessage(data.message, 1);
+    Pushbots.setMessage(data.message);
   }
 
   if (data.fields) {
@@ -22,7 +22,7 @@ function sendPushNotification(userId, data) {
   if (data.img) {
     Pushbots.largeIcon(data.img);
   }
-  
+
   Pushbots.sendByAlias(userId);
 
   Pushbots.push(function(response) {
