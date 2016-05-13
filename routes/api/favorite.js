@@ -157,7 +157,7 @@ router.delete('/:bookId', utils.basicAuth, function(req, res, next) {
         })
         .then(function() {
             res.json({
-                status: 0,
+                status: 1,
                 message: 'Removed from favorited list'
             });
         })
