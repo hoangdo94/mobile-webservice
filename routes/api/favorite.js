@@ -111,7 +111,8 @@ router.post('/:bookId', utils.basicAuth, function(req, res, next) {
                 user: req.user._id
             });
             pushbots.sendPushNotification(book.userId, {
-              message: req.user.username + ' đã thích cuốn sách ' + book.title + ' của bạn',
+              message: req.user.username + ' đã thích cuốn sách "' + book.title + '" của bạn',
+              img: book.cover,
               fields: {
                 bookId: book._id
               }
