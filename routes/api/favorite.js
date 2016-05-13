@@ -111,8 +111,10 @@ router.post('/:bookId', utils.basicAuth, function(req, res, next) {
                 user: req.user._id
             });
             pushbots.sendPushNotification(book.userId, {
-              title: 'Yêu thích',
-              message: req.user.username + ' đã thích 1 cuốn sách của bạn'
+              message: req.user.username + ' đã thích cuốn sách ' + book.title + ' của bạn',
+              fields: {
+                bookId: book._id
+              }
             });
             return favorite.save();
         })

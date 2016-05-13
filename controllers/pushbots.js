@@ -21,7 +21,7 @@ function sendPushNotification(userId, data) {
   Pushbots.sendByAlias(userId);
 
   Pushbots.push(function(response) {
-    console.log('Pushbots', response);
+    console.log(response);
   });
 
 }
