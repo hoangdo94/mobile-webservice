@@ -4,6 +4,8 @@ var _ = require('lodash');
 var Promise = require('bluebird');
 
 var Book = require('../../models/book');
+var Comment = require('../../models/comment');
+var Favorite = require('../../models/favorite');
 
 var router = express.Router();
 
@@ -181,11 +183,30 @@ router.delete('/:id', utils.basicAuth, function(req, res, next) {
         .then(function(id) {
             return Book.findByIdAndRemove(id);
         })
-        .then(function() {
+        .then(function(book) {
             res.json({
-                status: 1,
-                message: 'deleted'
+              status: 1,
+              message: 'deleted'
             });
+
+            // Delete all comments and favorites of the book
+            var bookId = book._id;
+            console.log('Deleted the book', bookId);
+            Comment.remove({book: bookId})
+              .then(function() {
+                console.log('Deleted comments on the book', bookId);
+              })
+              .catch(function(err) {
+                console.log('Error happened when deleting comments on the book', bookId);
+              });
+            Favorite.remove({book: bookId})
+            .then(function() {
+              console.log('Deleted favorites on the book', bookId);
+            })
+            .catch(function(err) {
+              console.log('Error happened when deleting favorites on the book', bookId);
+            });
+
         })
         .catch(function(err) {
             res.json({

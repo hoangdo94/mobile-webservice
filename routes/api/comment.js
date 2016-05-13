@@ -62,6 +62,9 @@ router.post('/:bookId', utils.basicAuth, function(req, res, next) {
                 });
         })
         .then(function(book) {
+            if (req.body.content) {
+              req.body.content = req.body.content.trim();
+            }
             var comment = Comment(req.body);
             comment.user = req.user._id;
             comment.book = book._id;
@@ -119,6 +122,9 @@ router.put('/:id', utils.basicAuth, function(req, res, next) {
                 });
         })
         .then(function(comment) {
+            if (req.body.content) {
+              req.body.content = req.body.content.trim();
+            }
             _.assign(comment, req.body);
             return comment.save();
         })

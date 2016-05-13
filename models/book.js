@@ -2,6 +2,9 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var mongoosePaginate = require('mongoose-paginate');
 
+var Comment = require('./comment');
+var Favorite = require('./favorite');
+
 var bookSchema = new Schema({
     userId: {
         type: String,
