@@ -1,5 +1,6 @@
 var express = require('express');
 var utils = require('../../controllers/utils');
+var pushbots = require('../../controllers/pushbots');
 var _ = require('lodash');
 var Promise = require('bluebird');
 
@@ -108,6 +109,10 @@ router.post('/:bookId', utils.basicAuth, function(req, res, next) {
             var favorite = Favorite({
                 book: book._id,
                 user: req.user._id
+            });
+            pushbots.sendPushNotification(book.userId, {
+              title: 'Yêu thích',
+              message: req.user.username + ' đã thích 1 cuốn sách của bạn'
             });
             return favorite.save();
         })
