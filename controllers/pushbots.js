@@ -23,6 +23,10 @@ function sendPushNotification(userId, data) {
     Pushbots.largeIcon(data.img);
   }
 
+  if (data.nextActivity) {
+    Pushbots.nextActivity(data.nextActivity);
+  }
+
   Pushbots.sendByAlias(userId);
 
   Pushbots.push(function(response) {

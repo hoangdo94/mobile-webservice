@@ -113,6 +113,7 @@ router.post('/:bookId', utils.basicAuth, function(req, res, next) {
             pushbots.sendPushNotification(book.userId, {
               message: req.user.username + ' đã thích cuốn sách "' + book.title + '" của bạn',
               image: 'http://api.ws.hoangdo.info/images/' + book.cover,
+              nextActivity: 'hcmut.cse.bookslover.BookDetailsActivity',
               fields: {
                 bookId: book._id,
                 BigTextStyle: true,
